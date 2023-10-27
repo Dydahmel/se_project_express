@@ -5,10 +5,6 @@ module.exports = {
         "es2021": true
     },
     "extends":[ "eslint:recommended", "airbnb-base", "prettier"],
-    "globals": {
-      // Add _id as a global variable
-      "_id": "readonly",
-    },
     "overrides": [
         {
             "env": {

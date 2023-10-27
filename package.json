@@ -20,7 +20,8 @@
   "homepage": "https://github.com/Dydahmel/se_project_express#readme",
   "dependencies": {
     "express": "^4.18.2",
-    "mongoose": "^6.6.1"
+    "mongoose": "^6.6.1",
+    "validator": "^13.11.0"
   },
   "devDependencies": {
     "eslint": "^8.52.0",
