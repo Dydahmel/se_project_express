@@ -17,13 +17,24 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 const routes = require('./routes');
 
+app.use((req, res, next) => {
+  req.user = {
+    _id: '65425c2ab0abd2dd4fea261c'// paste the _id of the test user created in the previous step
+  };
+  next();
+});
+
 app.use(routes);
+
 
 
 
 app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`);
 });
+
+
+// 65425c2ab0abd2dd4fea261c
 
 
 // database start
