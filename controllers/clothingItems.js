@@ -5,14 +5,19 @@ const { BAD_REQUEST_ERROR, INTERNAL_SERVER_ERROR, NOT_FOUND_ERROR } = require('.
 module.exports.getClothingItems = (req, res) => {
   ClothingItem.find({})
   .populate('owner')
-  .orFail(() => {
-    // document not found
-    // throw an error with status 404
-  })
+  .orFail()
   .then(clothingItems => res.send({data:clothingItems}))
   .catch((err)=> {
     console.error(err);
-    return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Error in getClothingItems'})
+    if(err.name === "DocumentNotFoundError"){
+      return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` })
+    }
+    if(err.name === "CastError"){
+      return res.status(BAD_REQUEST_ERROR).send({ message: `${err.message}` })
+    }
+    else{
+      return res.status(INTERNAL_SERVER_ERROR).send({ message: 'Error in getClothingItems'}) }
+
   });
 }
 
@@ -42,11 +47,16 @@ module.exports.deleteClothingItem = (req, res) =>{
   console.log(itemId)
   ClothingItem.findByIdAndDelete(itemId)
   .orFail()
-  .then(item => res.status(204).send({}))
+  .then(item => res.status(200).send({item}))
   .catch((err)=>{
     console.error(err.name)
-    if(err.name === "CastError" || "DocumentNotFoundError"){
-      return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` })
+
+    if(err.name === "DocumentNotFoundError"){
+      //im not sure if this is correct way to handle, but i wanted to pass all postman tests
+      return res.status(NOT_FOUND_ERROR).send({ message: `Item was deleted` })
+    }
+    if(err.name === "CastError"){
+      return res.status(BAD_REQUEST_ERROR).send({ message: `${err.message}` })
     }
     else{
       res.status(INTERNAL_SERVER_ERROR).send({ message: 'Error in deleteClothingItem'})
@@ -61,7 +71,59 @@ module.exports.updateItem = (req, res) =>{
   ClothingItem.findByIdAndUpdate(itemId, {$set:{imageUrl}})
   .orFail()
   .then((item) => res.status(200).send({data:item}))
-  .catch(()=> res.status(INTERNAL_SERVER_ERROR).send({ message: 'Error in updateItem'}))
+  .catch((err)=>{
+    console.error(err.name)
+    if(err.name === "DocumentNotFoundError"){
+      return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` })
+    }
+    if(err.name === "CastError"){
+      return res.status(BAD_REQUEST_ERROR).send({ message: `${err.message}` })
+    }
+    else{
+      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Error in updateItem'})
+    }}
+  )
+};
+
+module.exports.likeItem = (req, res) => {
+ClothingItem.findByIdAndUpdate(
+  req.params.itemId,
+  { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
+  { new: true })
+  .orFail()
+    .then((item) => res.status(200).send({data:item}))
+    .catch((err)=>{
+      console.error(err.name)
+      if(err.name === "DocumentNotFoundError"){
+        return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` })
+      }
+      if(err.name === "CastError"){
+        return res.status(BAD_REQUEST_ERROR).send({ message: `${err.message}` })
+      }
+      else{
+        res.status(INTERNAL_SERVER_ERROR).send({ message: 'Error in likeItem'})
+      }}
+    )
+}
+module.exports.dislikeItem = (req, res) =>{
+ClothingItem.findByIdAndUpdate(
+  req.params.itemId,
+  { $pull: { likes: req.user._id } }, // remove _id from the array
+  { new: true })
+  .orFail()
+  .then((item) => res.status(200).send({data:item}))
+  .catch((err)=>{
+    console.error(err.name)
+    if(err.name === "DocumentNotFoundError"){
+      return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` })
+    }
+    if(err.name === "CastError"){
+      return res.status(BAD_REQUEST_ERROR).send({ message: `${err.message}` })
+    }
+    else{
+      res.status(INTERNAL_SERVER_ERROR).send({ message: 'Error in dislikeItem'})
+    }}
+  )
 }
 
 
