@@ -6,7 +6,8 @@
   "scripts": {
     "start": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+    "format": "prettier --loglevel warn --write \"{controllers,models,routes,utils}/**/*.{jsx,js}\""
   },
   "repository": {
     "type": "git",
@@ -22,6 +23,7 @@
     "brew": "^0.0.8",
     "express": "^4.18.2",
     "mongoose": "^6.6.1",
+    "pretty": "^2.0.0",
     "validator": "^13.11.0"
   },
   "devDependencies": {
@@ -30,6 +32,6 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.0",
     "nodemon": "^3.0.1",
-    "prettier": "^3.0.3"
+    "prettier": "3.0.3"
   }
 }
