@@ -7,17 +7,10 @@ const {
 
 module.exports.getUsers = (req, res) => {
   User.find({})
-    .orFail()
     .then((users) => res.send({ data: users }))
-    .catch((err) => {
-      if (err.name ===  "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
-      }
-        return res
-          .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Error in getUsers" });
-
-    });
+    .catch(() =>
+      res.status(INTERNAL_SERVER_ERROR).send({ message: "Error in getUsers" }),
+    );
 };
 
 module.exports.getUserById = (req, res) => {
@@ -35,10 +28,9 @@ module.exports.getUserById = (req, res) => {
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
       }
-        return res
-          .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Error in getUserById" });
-
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Error in getUserById" });
     });
 };
 
@@ -53,9 +45,8 @@ module.exports.createUser = (req, res) => {
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
       }
-        return res
-          .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Error in createUser" });
-
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Error in createUser" });
     });
 };

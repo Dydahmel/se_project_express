@@ -8,23 +8,12 @@ const {
 module.exports.getClothingItems = (req, res) => {
   ClothingItem.find({})
     .populate("owner")
-    .orFail()
     .then((clothingItems) => res.send({ data: clothingItems }))
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
-      }
-      if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR)
-          .send({ message: `${err.message}` });
-      }
-        return res
-          .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Error in getClothingItems" });
-
-    });
+    .catch(() =>
+      res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Error in getClothingItems" }),
+    );
 };
 
 module.exports.createClothingItem = (req, res) => {
@@ -51,10 +40,9 @@ module.exports.createClothingItem = (req, res) => {
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
       }
-        return res
-          .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Error in createClothingItem" });
-
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Error in createClothingItem" });
     });
 };
 
@@ -78,34 +66,9 @@ module.exports.deleteClothingItem = (req, res) => {
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
       }
-        return res
-          .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Error in deleteClothingItem" });
-
-    });
-};
-
-module.exports.updateItem = (req, res) => {
-  const { itemId } = req.params;
-  const { imageUrl } = req.body;
-  console.log(imageUrl);
-  ClothingItem.findByIdAndUpdate(itemId, { $set: { imageUrl } })
-    .orFail()
-    .then((item) => res.status(200).send({ data: item }))
-    .catch((err) => {
-      console.error(err.name);
-      if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
-      }
-      if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR)
-          .send({ message: `${err.message}` });
-      }
-        return res
-          .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Error in updateItem" });
-
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Error in deleteClothingItem" });
     });
 };
 
@@ -127,10 +90,9 @@ module.exports.likeItem = (req, res) => {
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
       }
-        return res
-          .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Error in likeItem" });
-
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Error in likeItem" });
     });
 };
 module.exports.dislikeItem = (req, res) => {
@@ -151,9 +113,8 @@ module.exports.dislikeItem = (req, res) => {
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
       }
-        return res
-          .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Error in dislikeItem" });
-
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Error in dislikeItem" });
     });
 };
