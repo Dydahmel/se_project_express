@@ -15,6 +15,6 @@ router.put("/:itemId", updateItem);
 router.put("/:itemId/likes", likeItem);
 router.delete("/:itemId/likes", dislikeItem);
 
-//PUT /items/:itemId/likes
+// PUT /items/:itemId/likes
 
 module.exports = router;

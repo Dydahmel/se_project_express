@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const path = require('path');
 const bodyParser = require('body-parser');
+
 const { PORT = 3001 } = process.env;
 
 mongoose.set('strictQuery', false);
@@ -38,6 +39,6 @@ app.listen(PORT, () => {
 
 
 // database start
-//"C:\Program Files\MongoDB\Server\5.0\bin\mongod.exe" --dbpath="c:\data\db"
-//server start
-//npm run start
+// "C:\Program Files\MongoDB\Server\5.0\bin\mongod.exe" --dbpath="c:\data\db"
+// server start
+// npm run start

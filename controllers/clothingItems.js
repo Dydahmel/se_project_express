@@ -19,11 +19,11 @@ module.exports.getClothingItems = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
-      } else {
+      }
         return res
           .status(INTERNAL_SERVER_ERROR)
           .send({ message: "Error in getClothingItems" });
-      }
+
     });
 };
 
@@ -33,7 +33,7 @@ module.exports.createClothingItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
   const ownerId = req.user._id;
   const createdAt = new Date();
-  let likes = [];
+  const likes = [];
   ClothingItem.create({
     name,
     weather,
@@ -50,11 +50,11 @@ module.exports.createClothingItem = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
-      } else {
+      }
         return res
           .status(INTERNAL_SERVER_ERROR)
           .send({ message: "Error in createClothingItem" });
-      }
+
     });
 };
 
@@ -68,7 +68,7 @@ module.exports.deleteClothingItem = (req, res) => {
       console.error(err.name);
 
       if (err.name === "DocumentNotFoundError") {
-        //im not sure if this is correct way to handle, but i wanted to pass all postman tests
+        // im not sure if this is correct way to handle, but i wanted to pass all postman tests
         return res
           .status(NOT_FOUND_ERROR)
           .send({ message: `Item was deleted` });
@@ -77,11 +77,11 @@ module.exports.deleteClothingItem = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
-      } else {
-        res
+      }
+        return res
           .status(INTERNAL_SERVER_ERROR)
           .send({ message: "Error in deleteClothingItem" });
-      }
+
     });
 };
 
@@ -101,11 +101,11 @@ module.exports.updateItem = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
-      } else {
-        res
+      }
+        return res
           .status(INTERNAL_SERVER_ERROR)
           .send({ message: "Error in updateItem" });
-      }
+
     });
 };
 
@@ -126,11 +126,11 @@ module.exports.likeItem = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
-      } else {
-        res
+      }
+        return res
           .status(INTERNAL_SERVER_ERROR)
           .send({ message: "Error in likeItem" });
-      }
+
     });
 };
 module.exports.dislikeItem = (req, res) => {
@@ -150,10 +150,10 @@ module.exports.dislikeItem = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
-      } else {
-        res
+      }
+        return res
           .status(INTERNAL_SERVER_ERROR)
           .send({ message: "Error in dislikeItem" });
-      }
+
     });
 };

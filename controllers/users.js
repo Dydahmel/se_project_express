@@ -10,13 +10,13 @@ module.exports.getUsers = (req, res) => {
     .orFail()
     .then((users) => res.send({ data: users }))
     .catch((err) => {
-      if (err.name === "CastError" || "DocumentNotFoundError") {
+      if (err.name ===  "DocumentNotFoundError") {
         return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
-      } else {
+      }
         return res
           .status(INTERNAL_SERVER_ERROR)
           .send({ message: "Error in getUsers" });
-      }
+
     });
 };
 
@@ -34,11 +34,11 @@ module.exports.getUserById = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
-      } else {
+      }
         return res
           .status(INTERNAL_SERVER_ERROR)
           .send({ message: "Error in getUserById" });
-      }
+
     });
 };
 
@@ -52,10 +52,10 @@ module.exports.createUser = (req, res) => {
         return res
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
-      } else {
+      }
         return res
           .status(INTERNAL_SERVER_ERROR)
           .send({ message: "Error in createUser" });
-      }
+
     });
 };
