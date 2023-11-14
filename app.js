@@ -1,7 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-const { getUsers, getUserById, createUser, login } = require("../controllers/users");
+const { getUsers, getUserById, createUser, login } = require("./controllers/users");
 
 const { PORT = 3001 } = process.env;
 
@@ -44,4 +44,4 @@ app.listen(PORT, () => {
 // database start
 // "C:\Program Files\MongoDB\Server\5.0\bin\mongod.exe" --dbpath="c:\data\db"
 // server start
-// npm run start
+// npm run dev
