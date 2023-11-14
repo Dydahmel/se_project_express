@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { getUsers, getUserById, createUser, login } = require("../controllers/users");
 
 const { PORT = 3001 } = process.env;
 
@@ -23,7 +24,11 @@ app.use((req, res, next) => {
   next();
 });
 
+app.post("/signup", createUser);
+app.post('/signin', login);
 app.use(routes);
+
+
 
 
 
