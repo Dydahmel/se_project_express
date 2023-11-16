@@ -7,7 +7,7 @@ const {
 } = require("../utils/errors");
 const bcrypt = require("bcrypt");
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = require("../utils/config")
+const {JWT_SECRET} = require("../utils/config")
 
 module.exports.getUsers = (req, res) => {
   User.find({})
@@ -18,7 +18,7 @@ module.exports.getUsers = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  const { userId } = req.params;
+  const userId = req.user._id;
   console.log(userId);
   User.findById(userId)
     .orFail()
@@ -71,13 +71,22 @@ module.exports.login = (req, res) =>{
       res.send({
         token: jwt.sign({ _id: user._id}, JWT_SECRET, { expiresIn: "7d"})
       })
+
     })
     .catch((err) => {
-      if (err.name === "Authorithation required"){
+
+      if (err.name === "AuthorizationError"){
         return res.status(AUTH_REQ).send({message: "Wrong email or password"})
       }
       return res
         .status(INTERNAL_SERVER_ERROR)
         .send({ message: "Error in login" });
+
     })
+};
+
+module.exports.updateUser = (req, res) => {
+  const userId = req.user._id;
+
 }
+

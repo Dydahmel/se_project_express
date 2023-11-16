@@ -18,6 +18,7 @@ module.exports.getClothingItems = (req, res) => {
 
 module.exports.createClothingItem = (req, res) => {
   console.log(req.user._id);
+  console.log(req.user)
 
   const { name, weather, imageUrl } = req.body;
   const ownerId = req.user._id;
