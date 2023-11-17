@@ -3,6 +3,7 @@ const {
   BAD_REQUEST_ERROR,
   INTERNAL_SERVER_ERROR,
   NOT_FOUND_ERROR,
+  FORBIDDEN_ERROR,
 } = require("../utils/errors");
 
 module.exports.getClothingItems = (req, res) => {
@@ -49,29 +50,42 @@ module.exports.createClothingItem = (req, res) => {
 
 module.exports.deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
-  console.log(itemId);
-  ClothingItem.findByIdAndDelete(itemId)
-    .orFail()
-    .then((item) => res.status(200).send({ item }))
-    .catch((err) => {
-      console.error(err.name);
+  const currentUser = req.user._id;
 
-      if (err.name === "DocumentNotFoundError") {
-        // im not sure if this is correct way to handle, but i wanted to pass all postman tests
+    ClothingItem.findById(itemId)
+      .orFail()
+      .then((item) => {
+        console.log(currentUser, item.owner.toString())
+        if(currentUser.toString() !== item.owner.toString()){
+          return res.status(FORBIDDEN_ERROR).send({message : "You have no premission to access, please log in"})
+        }
+        return ClothingItem.findByIdAndDelete(itemId)
+        .orFail()
+        .then((item) => res.status(200).send({  message: `Item was deleted`  }))
+        .catch((err) => {
+          console.error(err.name);
+        })
+      })
+      .catch((err) => {
+        if (err.name === "DocumentNotFoundError") {
+          // im not sure if this is correct way to handle, but i wanted to pass all postman tests
+          return res
+            .status(NOT_FOUND_ERROR)
+            .send({ message: `${err.message}` });
+        }
+        if (err.name === "CastError") {
+          return res
+            .status(BAD_REQUEST_ERROR)
+            .send({ message: `${err.message}` });
+        }
         return res
-          .status(NOT_FOUND_ERROR)
-          .send({ message: `Item was deleted` });
-      }
-      if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR)
-          .send({ message: `${err.message}` });
-      }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Error in deleteClothingItem" });
-    });
+          .status(INTERNAL_SERVER_ERROR)
+          .send({ message: "Error in deleteClothingItem" });
+      })
+
+
 };
+
 
 module.exports.likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(

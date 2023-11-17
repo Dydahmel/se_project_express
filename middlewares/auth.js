@@ -15,7 +15,7 @@ module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
-    console.log('its here')
+
     return handleAuthError(res);
   }
 
@@ -25,6 +25,8 @@ module.exports = (req, res, next) => {
     payload = jwt.verify(token, JWT_SECRET);
   }
   catch (err) {
+    console.log('its here')
+
     return handleAuthError(res);
   }
 

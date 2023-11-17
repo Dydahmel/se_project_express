@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const cors = require("cors");
 
 
 const { PORT = 3001 } = process.env;
@@ -16,15 +17,7 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 const routes = require('./routes');
-
-app.use((req, res, next) => {
-  req.user = {
-    _id: '65425c2ab0abd2dd4fea261c'// paste the _id of the test user created in the previous step
-  };
-  next();
-});
-
-
+app.use(cors());
 app.use(routes);
 
 

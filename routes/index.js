@@ -2,7 +2,7 @@ const router = require("express").Router();
 const { NOT_FOUND_ERROR } = require("../utils/errors");
 const clothingItems = require("./clothingItems");
 const users = require("./users");
-const { getUsers, getUserById, createUser, login } = require("../controllers/users");
+const { getUsers, getUserById, createUser, login, updateUser } = require("../controllers/users");
 const auth = require("../middlewares/auth");
 
 
@@ -14,7 +14,7 @@ router.post("/signin", login);
 router.use("/items", clothingItems);
 router.use(auth);
 router.get("/users/me", auth, getUserById);
-router.patch("/users/me", auth,)
+router.patch("/users/me", auth, updateUser)
 
 
 module.exports = router;
