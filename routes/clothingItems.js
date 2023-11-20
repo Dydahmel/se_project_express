@@ -6,7 +6,7 @@ const {
   likeItem,
   dislikeItem,
 } = require("../controllers/clothingItems");
-const auth = require('../middlewares/auth');
+const auth = require("../middlewares/auth");
 
 router.get("/", getClothingItems);
 router.use(auth);

@@ -8,7 +8,7 @@
     "dev": "nodemon app.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "lint": "npx eslint .",
-    "format": "prettier --loglevel warn --write \"{controllers,models,routes,utils}/**/*.{jsx,js}\""
+    "format": "prettier --log-level warn --write \"{controllers,models,routes,utils}/**/*.{jsx,js}\""
   },
   "repository": {
     "type": "git",

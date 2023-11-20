@@ -19,7 +19,7 @@ module.exports.getClothingItems = (req, res) => {
 
 module.exports.createClothingItem = (req, res) => {
   console.log(req.user._id);
-  console.log(req.user)
+  console.log(req.user);
 
   const { name, weather, imageUrl } = req.body;
   const ownerId = req.user._id;
@@ -52,40 +52,37 @@ module.exports.deleteClothingItem = (req, res) => {
   const { itemId } = req.params;
   const currentUser = req.user._id;
 
-    ClothingItem.findById(itemId)
-      .orFail()
-      .then((item) => {
-        console.log(currentUser, item.owner.toString())
-        if(currentUser.toString() !== item.owner.toString()){
-          return res.status(FORBIDDEN_ERROR).send({message : "You have no premission to access, please log in"})
-        }
-        return ClothingItem.findByIdAndDelete(itemId)
+  ClothingItem.findById(itemId)
+    .orFail()
+    .then((item) => {
+      console.log(currentUser, item.owner.toString());
+      if (currentUser.toString() !== item.owner.toString()) {
+        return res
+          .status(FORBIDDEN_ERROR)
+          .send({ message: "You have no premission to access, please log in" });
+      }
+      return ClothingItem.findByIdAndDelete(itemId)
         .orFail()
-        .then((item) => res.status(200).send({  message: `Item was deleted`  }))
+        .then(() => res.status(200).send({ message: `Item was deleted` }))
         .catch((err) => {
           console.error(err.name);
-        })
-      })
-      .catch((err) => {
-        if (err.name === "DocumentNotFoundError") {
-          // im not sure if this is correct way to handle, but i wanted to pass all postman tests
-          return res
-            .status(NOT_FOUND_ERROR)
-            .send({ message: `${err.message}` });
-        }
-        if (err.name === "CastError") {
-          return res
-            .status(BAD_REQUEST_ERROR)
-            .send({ message: `${err.message}` });
-        }
+        });
+    })
+    .catch((err) => {
+      if (err.name === "DocumentNotFoundError") {
+        // im not sure if this is correct way to handle, but i wanted to pass all postman tests
+        return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
+      }
+      if (err.name === "CastError") {
         return res
-          .status(INTERNAL_SERVER_ERROR)
-          .send({ message: "Error in deleteClothingItem" });
-      })
-
-
+          .status(BAD_REQUEST_ERROR)
+          .send({ message: `${err.message}` });
+      }
+      return res
+        .status(INTERNAL_SERVER_ERROR)
+        .send({ message: "Error in deleteClothingItem" });
+    });
 };
-
 
 module.exports.likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
