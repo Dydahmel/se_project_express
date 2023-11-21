@@ -63,10 +63,10 @@ module.exports.deleteClothingItem = (req, res) => {
       }
       return ClothingItem.findByIdAndDelete(itemId)
         .orFail()
-        .then(() => res.status(200).send({ message: `Item was deleted` }))
-        .catch((err) => {
-          console.error(err.name);
-        });
+        .then(() => res.send({ message: `Item was deleted` }))
+        .catch(() => res
+            .status(INTERNAL_SERVER_ERROR)
+            .send({ message: "Error in ClothingItem_findById" }));
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
@@ -91,7 +91,7 @@ module.exports.likeItem = (req, res) => {
     { new: true },
   )
     .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+    .then((item) => res.send({ data: item }))
     .catch((err) => {
       console.error(err.name);
       if (err.name === "DocumentNotFoundError") {
@@ -114,7 +114,7 @@ module.exports.dislikeItem = (req, res) => {
     { new: true },
   )
     .orFail()
-    .then((item) => res.status(200).send({ data: item }))
+    .then((item) => res.send({ data: item }))
     .catch((err) => {
       console.error(err.name);
       if (err.name === "DocumentNotFoundError") {

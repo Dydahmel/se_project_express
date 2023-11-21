@@ -11,14 +11,6 @@ const {
 } = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
 
-module.exports.getUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send({ data: users }))
-    .catch(() =>
-      res.status(INTERNAL_SERVER_ERROR).send({ message: "Error in getUsers" }),
-    );
-};
-
 module.exports.getUserById = (req, res) => {
   const userId = req.user._id;
   console.log(userId);
@@ -62,6 +54,7 @@ module.exports.createUser = (req, res) => {
     )
     .catch((err) => {
       console.error(err);
+      // i'm not sure how to make check if email is already in use, "manual tests" were working just fine, but automated tests just failing all the time
       if (err.code === 11000) {
         return res
           .status(CONFLICT_ERROR)
@@ -88,16 +81,19 @@ module.exports.login = (req, res) => {
       });
     })
     .catch((err) => {
-      console.error(err.message);
+      console.error(err);
       if (err.name === "AuthorizationError") {
         return res
           .status(AUTH_REQ)
           .send({ message: "Wrong email or password" });
       }
-      if (err.message === "data and hash arguments required") {
+      if (
+        err.name === "BadRequestError" ||
+        err.message === "data and hash arguments required"
+      ) {
         return res
           .status(BAD_REQUEST_ERROR)
-          .send({ message: `${err.message}` });
+          .send({ message: "Wrong email or password" });
       }
       return res
         .status(INTERNAL_SERVER_ERROR)
@@ -116,12 +112,17 @@ module.exports.updateUser = (req, res) => {
   return User.findByIdAndUpdate(
     userId,
     { $set: { name, avatar } },
-    { new: true },
+    { new: true, runValidators: true },
   )
     .orFail()
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
       console.error(err.name);
+      if (err.name === "ValidatonError") {
+        return res
+          .status(BAD_REQUEST_ERROR)
+          .send({ message: `${err.message}` });
+      }
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
       }

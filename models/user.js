@@ -1,7 +1,10 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
-const { AuthorizationError } = require("../middlewares/errors");
+const {
+  AuthorizationError,
+  BadRequestError,
+} = require("../middlewares/errors");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -36,7 +39,6 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
     select: false,
   },
 });
@@ -49,7 +51,7 @@ userSchema.statics.findUserByCredentials = function authorization(
     .select("+password")
     .then((user) => {
       if (!user) {
-        return Promise.reject(new AuthorizationError());
+        return Promise.reject(new BadRequestError());
       }
       return bcrypt.compare(password, user.password).then((mached) => {
         if (!mached) {
