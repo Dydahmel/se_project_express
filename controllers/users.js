@@ -54,7 +54,7 @@ module.exports.createUser = (req, res) => {
     )
     .catch((err) => {
       console.error(err);
-      // i'm not sure how to make check if email is already in use, "manual tests" were working just fine, but automated tests just failing all the time
+      // thank you!
       if (err.code === 11000) {
         return res
           .status(CONFLICT_ERROR)
@@ -118,7 +118,7 @@ module.exports.updateUser = (req, res) => {
     .then((item) => res.status(200).send({ data: item }))
     .catch((err) => {
       console.error(err.name);
-      if (err.name === "ValidatonError") {
+      if (err.name === "ValidationError") {
         return res
           .status(BAD_REQUEST_ERROR)
           .send({ message: `${err.message}` });
