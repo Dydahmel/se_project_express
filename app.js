@@ -9,7 +9,7 @@ const helmet = require('helmet');
 const { PORT = 3001 } = process.env;
 
 mongoose.set('strictQuery', false);
-mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db',
+mongoose.connect('mongodb://127.0.0.1:27017/wtwr_db_13',
 (r) => {
   console.log ('Connected to MongoDB!!!', r)
 });
