@@ -24,7 +24,7 @@ module.exports = (req, res, next) => {
     payload = jwt.verify(token, JWT_SECRET);
   }
   catch (err) {
-    console.log('its here')
+    console.log('token error, check auth in express')
 
     return handleAuthError(res);
   }
