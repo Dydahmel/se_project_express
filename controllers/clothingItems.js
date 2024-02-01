@@ -1,4 +1,5 @@
 const ClothingItem = require("../models/clothingItem");
+const { BadRequestError } = require("../utils/customErrors/BadRequestError");
 const {
   BAD_REQUEST_ERROR,
   INTERNAL_SERVER_ERROR,
@@ -38,9 +39,10 @@ module.exports.createClothingItem = (req, res) => {
       console.error(err.name);
 
       if (err.name === "ValidationError") {
-        return res
-          .status(BAD_REQUEST_ERROR)
-          .send({ message: `${err.message}` });
+        // return res
+        //   .status(BAD_REQUEST_ERROR)
+        //   .send({ message: `${err.message}` });
+        next(new BadRequestError("message"))
       }
       return res
         .status(INTERNAL_SERVER_ERROR)
