@@ -79,6 +79,7 @@ module.exports.login = (req, res) => {
       res.send({
         token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" }),
       });
+      console.log(token)
     })
     .catch((err) => {
       console.error(err);

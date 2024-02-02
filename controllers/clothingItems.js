@@ -44,11 +44,15 @@ module.exports.createClothingItem = (req, res) => {
         //   .send({ message: `${err.message}` });
         next(new BadRequestError("message"))
       }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Error in createClothingItem" });
+      else{
+        next(err)
+      }
+      // return res
+      //   .status(INTERNAL_SERVER_ERROR)
+      //   .send({ message: "Error in createClothingItem" });
     });
 };
+
 
 module.exports.deleteClothingItem = (req, res) => {
   const { itemId } = req.params;

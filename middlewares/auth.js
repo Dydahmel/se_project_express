@@ -19,6 +19,7 @@ module.exports = (req, res, next) => {
 
 
   const token = extractBearerToken(authorization);
+  //console.log(token)
   let payload;
   try {
     payload = jwt.verify(token, JWT_SECRET);
@@ -34,4 +35,5 @@ module.exports = (req, res, next) => {
   next();
   return null
 };
+
 

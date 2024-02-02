@@ -3,7 +3,7 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require("cors");
 const helmet = require('helmet');
-//const errorHandler = require("./utils/")
+const errorHandler = require("./middlewares/errorHandler")
 
 
 
@@ -24,7 +24,7 @@ const routes = require('./routes');
 
 app.use(cors());
 app.use(routes);
-//app.use(errorHandler);
+app.use(errorHandler);
 
 
 
