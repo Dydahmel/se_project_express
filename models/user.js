@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 const {
   AuthorizationError,
   BadRequestError,
-} = require("../utils/customErrors/AuthorizationError");
+} = require("../utils/customErrors/UnauthorizedError");
 
 const userSchema = new mongoose.Schema({
   name: {

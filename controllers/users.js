@@ -16,7 +16,10 @@ module.exports.getUserById = (req, res) => {
   console.log(userId);
   User.findById(userId)
     .orFail()
-    .then((user) => res.send({ data: user }))
+    .then((user) =>
+      //if(!user){}
+      res.send({ data: user }))
+    //.then notFound
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
@@ -79,7 +82,6 @@ module.exports.login = (req, res) => {
       res.send({
         token: jwt.sign({ _id: user._id }, JWT_SECRET, { expiresIn: "7d" }),
       });
-      console.log(token)
     })
     .catch((err) => {
       console.error(err);

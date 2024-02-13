@@ -7,18 +7,20 @@ const {
   FORBIDDEN_ERROR,
 } = require("../utils/errors");
 
-module.exports.getClothingItems = (req, res) => {
+module.exports.getClothingItems = (req, res, next) => {
   ClothingItem.find({})
     .populate("owner")
     .then((clothingItems) => res.send({ data: clothingItems }))
+    
     .catch(() =>
-      res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Error in getClothingItems" }),
+    next(err)
+      // res
+      //   .status(INTERNAL_SERVER_ERROR)
+      //   .send({ message: "Error in getClothingItems" }),
     );
 };
 
-module.exports.createClothingItem = (req, res) => {
+module.exports.createClothingItem = (req, res, next) => {
   console.log(req.user._id);
   console.log(req.user);
 
@@ -42,7 +44,7 @@ module.exports.createClothingItem = (req, res) => {
         // return res
         //   .status(BAD_REQUEST_ERROR)
         //   .send({ message: `${err.message}` });
-        next(new BadRequestError("message"))
+        next(new BadRequestError(`${err.message}`))
       }
       else{
         next(err)
