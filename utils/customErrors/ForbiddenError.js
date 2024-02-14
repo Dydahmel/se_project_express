@@ -6,7 +6,6 @@ class ForbiddenError extends Error {
     this.name = "ForbiddenError";
     this.statusCode = FORBIDDEN_ERROR;
   }
-};
+}
 
-
-module.exports = ForbiddenError
+module.exports = ForbiddenError;

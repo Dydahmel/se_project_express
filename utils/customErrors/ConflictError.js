@@ -6,6 +6,6 @@ class ConflictError extends Error {
     this.name = "ConflictError";
     this.statusCode = CONFLICT_ERROR;
   }
-};
+}
 
-module.exports = ConflictError
+module.exports = ConflictError;

@@ -1,19 +1,16 @@
 const ClothingItem = require("../models/clothingItem");
 const { BadRequestError } = require("../utils/customErrors/BadRequestError");
-const {
-  BAD_REQUEST_ERROR,
-  INTERNAL_SERVER_ERROR,
-  NOT_FOUND_ERROR,
-  FORBIDDEN_ERROR,
-} = require("../utils/errors");
+const ForbiddenError = require("../utils/customErrors/ForbiddenError");
+const NotFoundError = require("../utils/customErrors/NotFoundError");
 
 module.exports.getClothingItems = (req, res, next) => {
   ClothingItem.find({})
     .populate("owner")
     .then((clothingItems) => res.send({ data: clothingItems }))
-    
-    .catch(() =>
-    next(err)
+
+    .catch(
+      next,
+      // () =>
       // res
       //   .status(INTERNAL_SERVER_ERROR)
       //   .send({ message: "Error in getClothingItems" }),
@@ -38,16 +35,13 @@ module.exports.createClothingItem = (req, res, next) => {
   })
     .then((item) => res.send({ data: item }))
     .catch((err) => {
-      console.error(err.name);
-
       if (err.name === "ValidationError") {
         // return res
         //   .status(BAD_REQUEST_ERROR)
         //   .send({ message: `${err.message}` });
-        next(new BadRequestError(`${err.message}`))
-      }
-      else{
-        next(err)
+        next(new BadRequestError(`${err.message}`));
+      } else {
+        next(err);
       }
       // return res
       //   .status(INTERNAL_SERVER_ERROR)
@@ -55,8 +49,7 @@ module.exports.createClothingItem = (req, res, next) => {
     });
 };
 
-
-module.exports.deleteClothingItem = (req, res) => {
+module.exports.deleteClothingItem = (req, res, next) => {
   const { itemId } = req.params;
   const currentUser = req.user._id;
 
@@ -65,34 +58,44 @@ module.exports.deleteClothingItem = (req, res) => {
     .then((item) => {
       console.log(currentUser, item.owner.toString());
       if (currentUser.toString() !== item.owner.toString()) {
-        return res
-          .status(FORBIDDEN_ERROR)
-          .send({ message: "You have no premission to access, please log in" });
+        // return res
+        //   .status(FORBIDDEN_ERROR)
+        //   .send({ message: "You have no premission to access, please log in" });
+        throw new ForbiddenError(
+          "You have no premission to access, please log in",
+        );
       }
       return ClothingItem.findByIdAndDelete(itemId)
         .orFail()
         .then(() => res.send({ message: `Item was deleted` }))
-        .catch(() => res
-            .status(INTERNAL_SERVER_ERROR)
-            .send({ message: "Error in ClothingItem_findById" }));
+        .catch(
+          next,
+          // (err) => res
+          //   .status(INTERNAL_SERVER_ERROR)
+          //   .send({ message: "Error in ClothingItem_findById" })
+        );
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
         // im not sure if this is correct way to handle, but i wanted to pass all postman tests
-        return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
+        // return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
+        next(new NotFoundError("Clothing item was not found"));
       }
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR)
-          .send({ message: `${err.message}` });
+        next(new BadRequestError("Please check your data input"));
+        // return res
+        //   .status(BAD_REQUEST_ERROR)
+        //   .send({ message: `${err.message}` });
+      } else {
+        next(err);
       }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Error in deleteClothingItem" });
+      // return res
+      //   .status(INTERNAL_SERVER_ERROR)
+      //   .send({ message: "Error in deleteClothingItem" });
     });
 };
 
-module.exports.likeItem = (req, res) => {
+module.exports.likeItem = (req, res, next) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $addToSet: { likes: req.user._id } }, // add _id to the array if it's not there yet
@@ -101,21 +104,25 @@ module.exports.likeItem = (req, res) => {
     .orFail()
     .then((item) => res.send({ data: item }))
     .catch((err) => {
-      console.error(err.name);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
+        next(new NotFoundError("Clothing item was not found"));
+        // return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
       }
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR)
-          .send({ message: `${err.message}` });
+        next(new BadRequestError("Please check your data input"));
+        // return res
+        //   .status(BAD_REQUEST_ERROR)
+        //   .send({ message: `${err.message}` });
+      } else {
+        next(err);
       }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Error in likeItem" });
+      // return res
+      //   .status(INTERNAL_SERVER_ERROR)
+      //   .send({ message: "Error in likeItem" });
     });
 };
-module.exports.dislikeItem = (req, res) => {
+
+module.exports.dislikeItem = (req, res, next) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
     { $pull: { likes: req.user._id } }, // remove _id from the array
@@ -124,17 +131,20 @@ module.exports.dislikeItem = (req, res) => {
     .orFail()
     .then((item) => res.send({ data: item }))
     .catch((err) => {
-      console.error(err.name);
       if (err.name === "DocumentNotFoundError") {
-        return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
+        next(new NotFoundError("Clothing item was not found"));
+        // return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
       }
       if (err.name === "CastError") {
-        return res
-          .status(BAD_REQUEST_ERROR)
-          .send({ message: `${err.message}` });
+        next(new BadRequestError("Please check your data input"));
+        // return res
+        //   .status(BAD_REQUEST_ERROR)
+        //   .send({ message: `${err.message}` });
+      } else {
+        next(err);
       }
-      return res
-        .status(INTERNAL_SERVER_ERROR)
-        .send({ message: "Error in dislikeItem" });
+      // return res
+      //   .status(INTERNAL_SERVER_ERROR)
+      //   .send({ message: "Error in dislikeItem" });
     });
 };
