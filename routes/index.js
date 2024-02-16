@@ -3,9 +3,10 @@ const { NOT_FOUND_ERROR } = require("../utils/errors");
 const clothingItems = require("./clothingItems");
 const { createUser, login } = require("../controllers/users");
 const users = require("./users");
+const { validateNewUser, validateLogIn } = require("../middlewares/validation");
 
-router.post("/signup", createUser);
-router.post("/signin", login);
+router.post("/signup", validateNewUser ,createUser);
+router.post("/signin", validateLogIn, login);
 router.use("/items", clothingItems);
 router.use("/users", users);
 

@@ -3,7 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require("cors");
 const helmet = require('helmet');
-const errorHandler = require("./middlewares/errorHandler")
+const errorHandler = require("./middlewares/errorHandler");
+const {errors} = require('celebrate')
 
 
 
@@ -24,6 +25,7 @@ const routes = require('./routes');
 
 app.use(cors());
 app.use(routes);
+app.use(errors())
 app.use(errorHandler);
 
 
@@ -34,6 +36,7 @@ app.use(errorHandler);
 app.listen(PORT, () => {
   console.log(`App listening at port ${PORT}`);
 });
+
 
 
 // 65425c2ab0abd2dd4fea261c
