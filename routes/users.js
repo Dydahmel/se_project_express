@@ -11,3 +11,4 @@ router.get("/me", validateId, auth, getUserById);
 router.patch("/me", auth, updateUser);
 
 module.exports = router;
+

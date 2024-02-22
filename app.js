@@ -5,6 +5,10 @@ const cors = require("cors");
 const helmet = require('helmet');
 const errorHandler = require("./middlewares/errorHandler");
 const {errors} = require('celebrate')
+const {
+  requestLogger,
+  errorLoger
+} = require('./middlewares/logger')
 
 
 
@@ -24,7 +28,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const routes = require('./routes');
 
 app.use(cors());
+app.use(requestLogger);
 app.use(routes);
+app.use(errorLoger);
 app.use(errors())
 app.use(errorHandler);
 
