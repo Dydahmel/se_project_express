@@ -21,7 +21,9 @@ module.exports.validateNewItem = celebrate({
     imageUrl: Joi.string().required().custom(validateUrl).messages({
       "string.empty": 'The "imageUrl" must be filled in',
       "string.uri": 'The "imageUrl" must be a valid URL'
-    })
+    }),
+
+    weather: Joi.string().valid("hot", "warm", "cold").required()
 
   })
 });
