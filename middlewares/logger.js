@@ -1,17 +1,14 @@
-const winston = require('winston');
-const expressWinston = require('express-winston');
-
-// custom formatter
+const winston = require("winston");
+const expressWinston = require("express-winston");
 
 const messageFormat = winston.format.combine(
   winston.format.timestamp(),
   winston.format.printf(
-    ({level, message, meta, timestamp}) =>
-      `${timestamp} ${level}: ${meta.error?.stack || message} `
+    ({ level, message, meta, timestamp }) =>
+      `${timestamp} ${level}: ${meta.error?.stack || message}`
   )
 );
 
-//request logger
 const requestLogger = expressWinston.logger({
   transports: [
     new winston.transports.Console({
@@ -24,8 +21,7 @@ const requestLogger = expressWinston.logger({
   ],
 });
 
-// error logger
-const errorLoger = expressWinston.errorLogger({
+const errorLogger = expressWinston.errorLogger({
   transports: [
     new winston.transports.Console({
       format: messageFormat,
@@ -39,5 +35,5 @@ const errorLoger = expressWinston.errorLogger({
 
 module.exports = {
   requestLogger,
-  errorLoger
-}
+  errorLogger,
+};
