@@ -3,8 +3,8 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require("cors");
 const helmet = require('helmet');
-const errorHandler = require("./middlewares/errorHandler");
 const {errors} = require('celebrate')
+const errorHandler = require("./middlewares/errorHandler");
 const {
   requestLogger,
   errorLogger,

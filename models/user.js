@@ -2,9 +2,10 @@ const mongoose = require("mongoose");
 const validator = require("validator");
 const bcrypt = require("bcrypt");
 const {
-  AuthorizationError,
-  BadRequestError,
+  UnauthorizedError,
 } = require("../utils/customErrors/UnauthorizedError");
+
+const { BadRequestError } = require("../utils/customErrors/BadRequestError");
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -55,7 +56,7 @@ userSchema.statics.findUserByCredentials = function authorization(
       }
       return bcrypt.compare(password, user.password).then((mached) => {
         if (!mached) {
-          return Promise.reject(new AuthorizationError());
+          return Promise.reject(new UnauthorizedError());
         }
         return user;
       });

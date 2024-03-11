@@ -24,7 +24,6 @@ module.exports.getUserById = (req, res, next) => {
       if (err.name === "DocumentNotFoundError") {
         next(new NotFoundError("User was not found"));
         // return res.status(NOT_FOUND_ERROR).send({ message: `${err.message}` });
-
       }
       if (err.name === "CastError") {
         next(new BadRequestError("Please check your data input"));
@@ -92,7 +91,7 @@ module.exports.login = (req, res, next) => {
       });
     })
     .catch((err) => {
-      if (err.name === "AuthorizationError") {
+      if (err.name === "UnauthorizedError") {
         next(new UnauthorizedError("Wrong email or password"));
         // return res
         //   .status(AUTH_REQ)
